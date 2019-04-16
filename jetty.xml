@@ -1,0 +1,26 @@
+<project name="jetty" basedir="." default="restart">
+	<property environment="env" />
+	
+	<property name="stop.port" value="6090" />
+	<property name="stop.key" value="stop_jetty" />
+
+	<property name="start.command" value="${env.JAVA_HOME}/bin/java -DSTOP.PORT=${stop.port} -DSTOP.KEY=${stop.key} -jar ${env.JETTY_HOME}/start.jar" />
+
+	<property name="application.title" value="Jetty" />
+	
+	<target name="start">
+		<exec dir="${env.JETTY_BASE}" executable="sh">
+			<arg value="-c" />
+			<arg value="gnome-terminal -t '${application.title}' -- ${start.command}" />
+		</exec>
+	</target>
+
+	<target name="stop">
+		<exec dir="${env.JETTY_BASE}" executable="sh">
+			<arg value="-c" />
+			<arg value="${start.command} --stop" />
+		</exec>
+	</target>
+
+	<target name="restart" depends="stop,start" />
+</project>

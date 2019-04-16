@@ -1,0 +1,42 @@
+<project name="base" default="restart">
+	<property environment="env" />
+
+	<property name="target.dir" value="target" />
+
+	<property name="start.command" value="${env.JAVA_HOME}/bin/java -jar ${target.dir}/${artifactId}-${version}.${packaging}" />
+
+	<property name="application.title" value="Application title" />
+
+	<target name="clean">
+		<exec dir="." executable="sh">
+			<arg line="-c 'mvn clean'" />
+		</exec>
+	</target>
+
+	<target name="package">
+		<exec dir="." executable="sh">
+			<arg line="-c 'mvn package'" />
+		</exec>
+	</target>
+
+	<target name="clean-package" depends="clean,package" />
+
+	<target name="start">
+		<exec dir="." executable="sh">
+			<arg value="-c"/>
+			<arg value="gnome-terminal -t '${application.title}' -- ${start.command}" />
+		</exec>
+	</target>
+
+	<target name="stop">
+		<exec dir="." executable="sh">
+			<arg line="-c 'kill -9 $(lsof -ti tcp:${port})'" />
+		</exec>
+	</target>
+
+	<target name="restart" depends="stop,start" />
+
+	<target name="clean-start" depends="clean-package,start" />
+
+	<target name="clean-restart" depends="stop,clean-start" />
+</project>

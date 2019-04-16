@@ -1,0 +1,80 @@
+<project name="microservices" basedir="." default="restart">
+
+	<property name="gamification" value="../build/gamification.xml" />
+	<property name="gateway" value="../build/gateway.xml" />
+	<property name="multiplication" value="../build/multiplication.xml" />
+	<property name="jetty" value="../build/jetty.xml" />
+	<property name="service.registry" value="../build/service_registry.xml" />
+
+	<target name="clean">
+		<exec dir="../service-registry" executable="sh">
+			<arg line="-c 'ant -buildfile ${service.registry} clean'" />
+		</exec>
+
+		<exec dir="../gamification" executable="sh">
+			<arg line="-c 'ant -buildfile ${gamification} clean'" />
+		</exec>
+
+		<exec dir="../gateway" executable="sh">
+			<arg line="-c 'ant -buildfile ${gateway} clean'" />
+		</exec>
+
+		<exec dir="../multiplication" executable="sh">
+			<arg line="-c 'ant -buildfile ${multiplication} clean'" />
+		</exec>
+	</target>
+
+	<target name="package">
+		<exec dir="../service-registry" executable="sh">
+			<arg line="-c 'ant -buildfile ${service.registry} package'" />
+		</exec>
+		
+		<exec dir="../gamification" executable="sh">
+			<arg line="-c 'ant -buildfile ${gamification} package'" />
+		</exec>
+
+		<exec dir="../gateway" executable="sh">
+			<arg line="-c 'ant -buildfile ${gateway} package'" />
+		</exec>
+
+		<exec dir="../multiplication" executable="sh">
+			<arg line="-c 'ant -buildfile ${multiplication} package'" />
+		</exec>
+	</target>
+
+	<target name="clean-package" depends="clean,package" />
+
+	<target name="start">
+		<exec dir="../service-registry" executable="sh">
+			<arg line="-c 'ant -buildfile ${service.registry} start'" />
+		</exec>
+		
+		<exec dir="../multiplication" executable="sh">
+			<arg line="-c 'ant -buildfile ${multiplication} start'" />
+		</exec>
+
+		<exec dir="../gamification" executable="sh">
+			<arg line="-c 'ant -buildfile ${gamification} start'" />
+		</exec>
+
+		<exec dir="../gateway" executable="sh">
+			<arg line="-c 'ant -buildfile ${gateway} start'" />
+		</exec>
+
+		<ant antfile="${jetty}" target="start" />
+	</target>
+
+	<target name="stop">
+		<ant antfile="${jetty}" target="stop" />
+		<ant antfile="${gateway}" target="stop" />
+		<ant antfile="${gamification}" target="stop" />
+		<ant antfile="${multiplication}" target="stop" />
+		<ant antfile="${service.registry}" target="stop" />
+	</target>
+
+	<target name="restart" depends="stop,start" />
+
+	<target name="clean-start" depends="clean-package,start" />
+
+	<target name="clean-restart" depends="stop,clean-start" />
+</project>

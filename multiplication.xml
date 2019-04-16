@@ -1,0 +1,35 @@
+<project name="multiplication" basedir="../multiplication" default="restart">
+	<property name="artifactId" value="multiplication" />
+	<property name="version" value="0.0.1-SNAPSHOT" />
+	<property name="packaging" value="war" />
+
+	<property name="port" value="9080" />
+
+	<property name="base.file" value="../build/base.xml" />
+	
+	<property name="application.title" value="Multiplication" />
+	
+	<target name="clean">
+		<ant antfile="${base.file}" target="clean" />
+	</target>
+
+	<target name="package">
+		<ant antfile="${base.file}" target="package" />
+	</target>
+
+	<target name="clean-package" depends="clean,package" />
+
+	<target name="start">
+		<ant antfile="${base.file}" target="start" />
+	</target>
+
+	<target name="stop">
+		<ant antfile="${base.file}" target="stop" />
+	</target>
+
+	<target name="restart" depends="stop,start" />
+
+	<target name="clean-start" depends="clean-package,start" />
+
+	<target name="clean-restart" depends="stop,clean-start" />
+</project>
